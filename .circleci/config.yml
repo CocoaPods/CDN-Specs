@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  build:
+    docker:
+       - image: circleci/ruby:2.4.1-node-browsers
+    
+    steps:
+      - restore_cache:
+          keys:
+            - repo-source-{{ .Branch }}-{{ .Revision }}
+            - repo-source-{{ .Branch }}-
+            - repo-source-
+      - checkout
+      - save_cache:
+          key: repo-source-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - ".git"
+      
+      - run: Scripts/add_incremental_index.sh
+      - run: git status
